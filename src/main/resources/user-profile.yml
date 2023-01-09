@@ -1,0 +1,473 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: http://localhost:8080/
+info:
+  description: This API returns information about users.
+  version: "1.0.0"
+  title: User Profile API
+  contact:
+    email: michael.gao@futurefit.ai
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: user_profiles
+    description: See information about users
+paths:
+  /user-profiles:
+    get:
+      tags:
+        - user_profiles
+      summary: get all user profiles
+      operationId: getUserProfiles
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      parameters:
+        - in: query
+          name: date_modified_start
+          schema:
+            type: string
+          description: The start of the time interval you want to pull users from in ISO8601 format
+        - in: query
+          name: date_modified_end
+          schema:
+            type: string
+            format: date-time
+          description: The end of the time interval you want to pull users from in ISO8601 format
+      responses:
+        '200':
+          description: see all user profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: bad input parameter
+  /user-profiles/{user_id}:
+    get:
+      tags:
+        - user_profiles
+      summary: get a user profile by a user's id
+      operationId: getUserProfileById
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      parameters:
+        - name: user_id
+          required: True
+          in: path
+          description: User ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: see the user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: bad input parameter
+components:
+  schemas:
+    UserProfile:
+      type: object
+      required:
+        - user_id
+        - role
+        - registration_date
+        - onboarded
+        - email
+        - email_consent
+        - first_name
+        - last_name
+        - phone_number
+        - location
+        - postal_code
+        - steps_completed
+        - steps_outstanding
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        tenant_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        role:
+          type: string
+          example: Job Seeker
+        registration_date:
+          type: string
+          format: date-time
+          description: "In ISO 8601 format"
+          example: '2016-08-29T09:12:33.001Z'
+        last_modified:
+          type: string
+          format: date-time
+          description: "In ISO 8601 format"
+          example: '2016-08-29T09:12:33.001Z'
+        onboarded:
+          type: boolean
+          example: True
+        email:
+          type: string
+          example: "job.seeker@hotmail.org"
+        email_subscription:
+          type: boolean
+          description: "This returns true if the user as opted in to email communications."
+          example: True
+        first_name:
+          type: string
+          example: "Michael"
+        last_name:
+          type: string
+          example: "Gao"
+        phone_number:
+          type: string
+          format: phone_number
+          example: "111-111-1111"
+        location:
+          type: string
+          example: "Paris, TX, USA"
+        postal_code:
+          type: string
+          example: "75013"
+        gender:
+          type: string
+          example: "female"
+        goal:
+          type: string
+          example: "land_a_job"
+        preferred_language:
+          type: string
+          example: "en-US"
+        year_of_birth:
+          type: integer
+          example: 1986
+        target_career:
+          type: string
+          example: "Teller"
+        steps_completed:
+          type: integer
+          example: 5
+        steps_outstanding:
+          type: integer
+          example: 3
+        communities:
+          type: array
+          example: [
+            "BIPOC",
+            "LBGTQ+"
+          ]
+          items:
+            type: string
+        industries:
+          type: array
+          example: [
+            "engineering",
+            "information_technology"
+          ]
+          items:
+            type: string
+        highest_level_education:
+          type: string
+          example: "Bachelor's Degree"
+        learning_types:
+          type: string
+          example: "Bachelor's Degree"
+        learning_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/EducationExperience'
+        work_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkExperience'
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Certification'
+        skills:
+          type: array
+          example: [
+            "Manufacturing Engineering",
+            "Manufacturing Processes",
+            "Lean Manufacturing"
+          ]
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        outcomes:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/OutcomeEmployed'
+              - $ref: '#/components/schemas/OutcomeEducation'
+              - $ref: '#/components/schemas/OutcomeReferral'
+              - $ref: '#/components/schemas/OutcomeDisengaged'
+              - $ref: '#/components/schemas/OutcomeOther'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assessment'
+        form_submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormSubmission'
+    Assessment:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "General Assessment"
+        provider:
+          type: string
+          example: "Vervoe"
+        type:
+          type: string
+          example: "Career"
+        score:
+          type: string
+          example: "4/5"
+        assessment_link:
+          type: string
+          example: "vervoe.com/assessmenta/a123-4fja"
+    FormSubmission:
+      type: object
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metadata'
+        submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+    Submission:
+      type: object
+      properties:
+        userResponse:
+          type: string
+          example: "Yes, No - this is the reason I put in the text response box"
+    Metadata:
+      type: object
+      required:
+        - type
+        - uuid
+        - order
+        - isStaff
+        - isOptional
+        - questionText
+        - options
+      properties:
+        type:
+          type: string
+          example: "MultiChoiceCheckboxInputField"
+        uuid:
+          type: string
+          format: uuid
+          example: "f7ef9ce1-32b0-44f5-8397-a55ac4ed848e"
+        order:
+          type: integer
+          example: 0
+        isStaff:
+          type: boolean
+          example: True
+        isOptional:
+          type: boolean
+          example: True
+        description:
+          type: string
+          example: "Here is my description"
+        placeholder:
+          type: string
+          example: "Here is my placeholder "
+        questionText:
+          type: string
+          example: "How are you?"
+        options:
+          type: array
+          items:
+            type: string
+    Service:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Volunteer"
+        provider:
+          type: string
+          example: "United Way"
+        stage:
+          type: string
+          example: "Explore"
+        start_month:
+          type: string
+          format: date-time
+          description: "The start month is the month after the date (ie, 31st of February means the service starts in March)."
+          example: "2020-12-31T23:00:00.000Z"
+        end_month:
+          type: string
+          format: date-time
+          description: "The end month is the month after the date (ie, 31st of February means end the service starts in March)."
+          example: "2021-12-31T23:00:00.000Z"
+    Outcome:
+      type: object
+      required:
+        - outcome_type
+      properties:
+        outcome_type:
+          type: string
+          example: "Education"
+    OutcomeEmployed:
+      allOf:
+        - $ref: '#/components/schemas/Outcome'
+        - type: object
+          properties:
+            job_title:
+              type: string
+              example: "Sales Rep"
+            comapny:
+              type: string
+              example: "Juni Learning"
+            salary:
+              $ref: '#/components/schemas/Salary'
+    OutcomeEducation:
+      allOf:
+        - $ref: '#/components/schemas/Outcome'
+        - type: object
+          properties:
+            program:
+              type: string
+              example: "Crown Molding"
+            instituion:
+              type: string
+              example: "Greenpoint Community College"
+            type:
+              type: string
+              example: "Associate's Degree"
+    OutcomeReferral:
+      allOf:
+        - $ref: '#/components/schemas/Outcome'
+        - type: object
+          properties:
+            outcome_type:
+              type: string
+              example: "referral"
+            service:
+              type: string
+              example: "Job Placement"
+            provider:
+              type: string
+              example: "Youth Employment Services"
+    OutcomeDisengaged:
+      allOf:
+        - $ref: '#/components/schemas/Outcome'
+        - type: object
+          properties:
+            disengaged:
+              type: boolean
+              example: True
+    OutcomeOther:
+      allOf:
+        - $ref: '#/components/schemas/Outcome'
+        - type: object
+          properties:
+            other:
+              type: boolean
+              example: True
+    Salary:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "Annual"
+        amount:
+          type: integer
+          example: 50000
+        currency:
+          type: string
+          example: "US Dollar ($)"
+    Tag:
+      type: object
+      properties:
+        tag:
+          type: string
+          example: "9/10 event"
+        date_of_tag:
+          type: string
+          format: date-time
+          example: "2022-06-04T00:50:02.408Z"
+    Certification:
+      type: object
+      properties:
+        issue_date:
+          type: string
+          format: date-time
+          description: "In ISO 8601 format"
+          example: '2020-12-01T00:00:00.000Z'
+        provider:
+          type: string
+          example: "FAA"
+        name:
+          type: string
+          example: "Private Pilot SEL"
+    EducationExperience:
+      type: object
+      properties:
+        present:
+          type: boolean
+          example: True
+        learning_type:
+          type: string
+          example: "bachelor_degree"
+        school:
+          type: string
+          example: "University of Washington, Tacoma"
+        field_study:
+          type: string
+          example: "Bachelor of Science"
+        starting_year:
+          type: string
+          example: "2011-09-01"
+        completion_year:
+          type: string
+          example: "2016-05-25"
+    WorkExperience:
+      type: object
+      properties:
+        present:
+          type: boolean
+          example: True
+        role:
+          type: string
+          example: "Techincal Program Manager"
+        company:
+          type: string
+          example: "Vervoe"
+        starting_year:
+          type: string
+          description: "In ISO 8601 format"
+          example: "2003-02-01T07:00:00.000Z"
+        completion_year:
+          type: string
+          description: "In ISO 8601 format"
+          example: "2016-02-01T07:00:00.000Z"
+        work_type:
+          type: string
+          example: "Internship"
